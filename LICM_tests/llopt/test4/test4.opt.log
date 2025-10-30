@@ -1,0 +1,38 @@
+Hoisting:
+  %8 = load i32, ptr %m.addr, align 4    for.cond1 → hoist_point
+  %9 = load i32, ptr %c, align 4    for.body3 → hoist_point
+Hoisting:
+  %4 = load i32, ptr %n.addr, align 4    for.cond → hoist_point1
+  %5 = load i32, ptr %a, align 4    for.body → hoist_point1
+  %6 = load i32, ptr %b, align 4    for.body → hoist_point1
+Hoisting:
+  %add = add nsw i32 %4, %5    for.body → hoist_point1
+Sinking:
+  store i32 %add, ptr %c, align 4    for.body → for.end7
+opt: /home/matija/llvm-project/llvm/include/llvm/Support/GenericLoopInfoImpl.h:342: void llvm::LoopBase<N, M>::verifyLoop() const [with BlockT = llvm::BasicBlock; LoopT = llvm::Loop]: Assertion `llvm::any_of(children<BlockT *>(BB), [&](BlockT *B) { return contains(B); }) && "Loop block has no in-loop successors!"' failed.
+PLEASE submit a bug report to https://github.com/llvm/llvm-project/issues/ and include the crash backtrace and instructions to reproduce the bug.
+Stack dump:
+0.	Program arguments: /home/matija/llvm-project/build/bin/opt -S -load /home/matija/llvm-project/build/lib/LLVMMyLICMPass.so --bugpoint-enable-legacy-pm -my-licm test4.ll -o test4.opt.ll
+1.	Running pass 'Function Pass Manager' on module 'test4.ll'.
+2.	Running pass 'Loop Pass Manager' on function '@foo'
+ #0 0x00007a45d1220d32 llvm::sys::PrintStackTrace(llvm::raw_ostream&, int) (/home/matija/llvm-project/build/bin/../lib/libLLVMSupport.so.22.0git+0x220d32)
+ #1 0x00007a45d121da2f llvm::sys::RunSignalHandlers() (/home/matija/llvm-project/build/bin/../lib/libLLVMSupport.so.22.0git+0x21da2f)
+ #2 0x00007a45d121db7c SignalHandler(int, siginfo_t*, void*) Signals.cpp:0:0
+ #3 0x00007a45d0c45330 (/lib/x86_64-linux-gnu/libc.so.6+0x45330)
+ #4 0x00007a45d0c9eb2c __pthread_kill_implementation ./nptl/pthread_kill.c:44:76
+ #5 0x00007a45d0c9eb2c __pthread_kill_internal ./nptl/pthread_kill.c:78:10
+ #6 0x00007a45d0c9eb2c pthread_kill ./nptl/pthread_kill.c:89:10
+ #7 0x00007a45d0c4527e raise ./signal/../sysdeps/posix/raise.c:27:6
+ #8 0x00007a45d0c288ff abort ./stdlib/abort.c:81:7
+ #9 0x00007a45d0c2881b _nl_load_domain ./intl/loadmsgcat.c:1177:9
+#10 0x00007a45d0c3b517 (/lib/x86_64-linux-gnu/libc.so.6+0x3b517)
+#11 0x00007a45c77828c9 llvm::LoopBase<llvm::BasicBlock, llvm::Loop>::verifyLoop() const (/home/matija/llvm-project/build/bin/../lib/../lib/libLLVMAnalysis.so.22.0git+0x3828c9)
+#12 0x00007a45c77883b4 llvm::LPPassManager::runOnFunction(llvm::Function&) (/home/matija/llvm-project/build/bin/../lib/../lib/libLLVMAnalysis.so.22.0git+0x3883b4)
+#13 0x00007a45c70b131e llvm::FPPassManager::runOnFunction(llvm::Function&) (/home/matija/llvm-project/build/bin/../lib/../lib/libLLVMCore.so.22.0git+0x2b131e)
+#14 0x00007a45c70b1761 llvm::FPPassManager::runOnModule(llvm::Module&) (/home/matija/llvm-project/build/bin/../lib/../lib/libLLVMCore.so.22.0git+0x2b1761)
+#15 0x00007a45c70b20c2 llvm::legacy::PassManagerImpl::run(llvm::Module&) (/home/matija/llvm-project/build/bin/../lib/../lib/libLLVMCore.so.22.0git+0x2b20c2)
+#16 0x00007a45d1439a55 optMain (/home/matija/llvm-project/build/bin/../lib/libLLVMOptDriver.so.22.0git+0x37a55)
+#17 0x00007a45d0c2a1ca __libc_start_call_main ./csu/../sysdeps/nptl/libc_start_call_main.h:74:3
+#18 0x00007a45d0c2a28b call_init ./csu/../csu/libc-start.c:128:20
+#19 0x00007a45d0c2a28b __libc_start_main ./csu/../csu/libc-start.c:347:5
+#20 0x00005f78dbb24835 _start (/home/matija/llvm-project/build/bin/opt+0x835)

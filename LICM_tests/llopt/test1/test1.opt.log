@@ -1,0 +1,5 @@
+Hoisting:
+  %4 = load i32, ptr %n.addr, align 4    for.cond → hoist_point
+  %5 = load i32, ptr %x, align 4    for.body → hoist_point
+Hoisting:
+  %mul = mul nsw i32 %4, 2    for.body → hoist_point
