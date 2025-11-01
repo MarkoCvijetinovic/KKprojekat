@@ -36,14 +36,14 @@ if [[ "$EXT" == "cpp" ]]; then
   ./bin/clang -S -emit-llvm "$ABS_INPUT" -o "$OUT_LL"
 
   # 2) Infer attrs
-  opt -passes="function-attrs" -S "$OUT_LL" -o "$OUT1_LL"
+  ./bin/opt -passes="function-attrs" -S "$OUT_LL" -o "$OUT1_LL"
 
   # 3) Your legacy-PM plugin pass
   ./bin/opt -load lib/MyAlwaysInline.so --bugpoint-enable-legacy-pm \
             -my-always-inline -S "$OUT1_LL" -o "$MY_AI_OUT"
 
   # 4) Built-in always-inline (run on the original IR as requested)
-  opt -passes="always-inline" -S "$OUT_LL" -o "$AI_OUT"
+  ./bin/opt -passes="always-inline" -S "$OUT_LL" -o "$AI_OUT"
 
   # 5) Tidy up
   rm -f "$OUT1_LL"

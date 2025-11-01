@@ -1,8 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-SRC_DIR="build/tests"
-OUT_ROOT="build/tests/llopt"
+SRC_DIR="build/LICM_tests"
+OUT_ROOT="build/LICM_tests/llopt"
 
 mkdir -p "$OUT_ROOT"
 
